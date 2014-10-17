@@ -62,8 +62,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     responsiveWidth: '900px',
     
     connected: false,
-    
-    minSplashTime: 1000,
+
+    // RLB MOD, made faster for development
+    //minSplashTime: 1000,
+    minSplashTime: 10,
 
     disableLeaderboard: false,
     
@@ -185,6 +187,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     completeStartup: function() {
       if (this.user) {
         this.loadScores();
+        this.resetScores(); // RLB MOD - for development
         this.selected = 'categories';
       } else {
         this.resetScores();

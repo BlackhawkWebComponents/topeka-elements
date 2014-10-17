@@ -92,7 +92,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.quizzes.next();
 
         this.async(function() {
-          if (this.scores.length === this.category.quizzes.length) {
+          // RLB MOD
+          //if (this.scores.length === this.category.quizzes.length) {
+          if (this.scores.length === this.category.quizzes.length || this.ceilingHit()) {
             this.selected = 'results';
           } else {
             this.showQuizzes();
@@ -125,6 +127,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.$.quizzes.resetScrollTop();
       this.selected = 'quizScore';
       this.quizScore = detail.score;
+    },
+
+    /*
+     RLB Mod - function to check whether the ceiling has been hit.  Ceiling is defined in json model.
+     */
+    ceilingHit: function() {
+      var ceilingHit = false;
+      if (this.category.ceiling && this.category.ceiling > 0) {
+        //console.log('check ceiling...');
+        var numIncorrect = 0;
+        for (var i = 0; i < this.scores.length; ++i) {
+          if (this.scores[i] > 0) {
+            if (this.category.ceilingConsecutive)
+              numIncorrect = 0;
+            //console.log(i + ' - correct');
+          } else {
+            ++numIncorrect;
+            //console.log(i + ' - incorrect');
+          }
+        }
+        var output = 'incorrect';
+        if (this.category.ceilingConsecutive)
+          output += ' (consecutive)';
+        //console.log(output + ' = ' + numIncorrect);
+        if (numIncorrect == this.category.ceiling) {
+          //console.log('ceiling hit');
+          ceilingHit = true;
+        }
+      }
+      return ceilingHit;
     }
     
   });
